@@ -1,4 +1,5 @@
 # EXPERIMENT-05-SOIL-MOISTURE-SENSOR-INTERFACE-TO-IOT-DEVELOPMENT-BOARD
+## Date: 16/05/2026
 
 ## Aim: 
 
@@ -107,10 +108,59 @@ GND is the ground pin.
 
 
 ## STM 32 CUBE PROGRAM :
+```
+#include "main.h"
+#include "stdio.h"
+uint16_t readValue;
 
+ADC_HandleTypeDef hadc;
+
+UART_HandleTypeDef huart2;
+
+
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_ADC_Init(void);
+static void MX_USART2_UART_Init(void);
+
+
+int __io_putchar(int ch){
+	HAL_UART_Transmit(&huart2,(uint8_t*)&ch,1,0xFFFF);
+	return ch;
+}
+
+int main(void)
+{
+
+  HAL_Init();
+  SystemClock_Config();
+  MX_GPIO_Init();
+  MX_ADC_Init();
+  MX_USART2_UART_Init();
+
+  while (1)
+  {
+    HAL_ADC_Start(&hadc);
+    HAL_ADC_PollForConversion(&hadc,HAL_MAX_DELAY);
+    readValue=HAL_ADC_GetValue(&hadc);
+    printf("Read value: %d\n",readValue);
+    uint32_t soilmoist_Percentage=100-(readValue/40.96);
+    printf("Soil moisture: %ld %%\n",soilmoist_Percentage);
+    HAL_Delay(2000);
+  }
+
+}
+
+```
 
 
 ## Output screen shots on serial monitor   :
+
+<img width="1280" height="576" alt="i-1" src="https://github.com/user-attachments/assets/972b0fc6-2242-4c74-acab-2c521d40b800" />
+<br>
+<br>
+<img width="1600" height="700" alt="i-2" src="https://github.com/user-attachments/assets/f5c934b0-9ebf-455d-a70d-07e9e154af24" />
+
  
  
  
